@@ -11,10 +11,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import net.rgielen.fxweaver.core.FxmlView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.event.MouseEvent;
 import java.util.stream.IntStream;
 
 @Component
@@ -35,11 +33,7 @@ public class DeliveryController {
     }
 
     public void addDelivery() {
-        Delivery newDelivery = Delivery.builder()
-                .name(nameField.getText())
-                .quantity(Integer.valueOf(quantityField.getText()))
-                .price(Integer.valueOf(priceField.getText()))
-                .build();
+        Delivery newDelivery = new Delivery(null, nameField.getText(), Integer.valueOf(quantityField.getText()), Integer.valueOf(priceField.getText()));
         try {
             Delivery savedDelivery = deliveryService.addDelivery(newDelivery);
             data.add(savedDelivery);
@@ -57,12 +51,7 @@ public class DeliveryController {
     public void updateDelivery() {
 
         try {
-            Delivery newDelivery = Delivery.builder()
-                    .id(Long.valueOf(idUpdateField.getText()))
-                    .name(nameUpdateField.getText())
-                    .quantity(Integer.valueOf(quantityUpdateField.getText()))
-                    .price(Integer.valueOf(priceUpdateField.getText()))
-                    .build();
+            Delivery newDelivery = new Delivery(Long.valueOf(idUpdateField.getText()), nameUpdateField.getText(), Integer.valueOf(quantityUpdateField.getText()), Integer.valueOf(priceUpdateField.getText()));
             Delivery savedDelivery = deliveryService.updateDelivery(newDelivery);
             int deliveryIndex= getPositionInListForId(Long.valueOf(idUpdateField.getText()));
             data.set(deliveryIndex, savedDelivery);
