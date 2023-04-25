@@ -11,6 +11,7 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.a1.controller.DeliveryController"
       prefHeight="400.0" prefWidth="600.0">
+    <Label fx:id="secretCodeHidden">You activated the secret</Label>
 <TableView fx:id="tableView">
     <columns>
         <TableColumn fx:id="idTableColumn" text="Id"></TableColumn>

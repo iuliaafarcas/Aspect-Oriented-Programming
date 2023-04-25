@@ -1,16 +1,17 @@
 package com.example.a1.controller;
 
-import com.example.a1.Delivery;
+import com.example.a1.model.Delivery;
+import com.example.a1.model.DeliverySA;
+import com.example.a1.aspects.DeliverySOAspect;
+import com.example.a1.aspects.Observer;
 import com.example.a1.service.DeliveryService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.IntStream;
@@ -18,8 +19,11 @@ import java.util.stream.IntStream;
 @Component
 @FxmlView("/mainUi.fxml")
 public class DeliveryController {
+
+    @Autowired
     public DeliveryController(DeliveryService deliveryService) {
         this.deliveryService = deliveryService;
+        DeliverySOAspect.aspectOf().subscribe((Observer) this);
     }
 
     @FXML
@@ -113,6 +117,14 @@ public class DeliveryController {
     private TextField quantityUpdateField;
 
     private ObservableList<Delivery> data;
+
+    @FXML
+    private Label secretCodeHidden;
+
+    public void handleSecretCode(DeliverySA context){
+        secretCodeHidden.setVisible(context.isActivated());
+
+    }
 
 
 }
