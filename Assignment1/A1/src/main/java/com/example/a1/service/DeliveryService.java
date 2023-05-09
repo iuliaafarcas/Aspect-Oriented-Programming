@@ -1,7 +1,6 @@
 package com.example.a1.service;
 
 import com.example.a1.model.Delivery;
-import com.example.a1.model.DeliverySA;
 import com.example.a1.repository.DeliveryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +9,12 @@ import java.util.List;
 
 @Service
 public class DeliveryService {
-    private final String SECRET_CODE = "isthisagoodsecretcode?";
-    private final DeliverySA deliverySA;
+
     private final DeliveryRepository repository;
 
     @Autowired
-    public DeliveryService(DeliverySA deliverySA, DeliveryRepository repository) {
-        this.deliverySA = deliverySA;
+    public DeliveryService( DeliveryRepository repository) {
+
         this.repository = repository;
     }
 
@@ -24,9 +22,6 @@ public class DeliveryService {
     public Delivery addDelivery(Delivery item) {
 
         Delivery newDelivery = this.repository.save(item);
-        if (SECRET_CODE.equals(newDelivery.getName())) {
-            deliverySA.setActivated(true);
-        }
         return newDelivery;
     }
 
@@ -36,9 +31,7 @@ public class DeliveryService {
         }
         var oldDelivery = repository.findById(id);
         repository.deleteById(id);
-        if (SECRET_CODE.equals(oldDelivery.get().getName())) {
-            deliverySA.setActivated(false);
-        }
+
     }
 
     @Transactional
@@ -48,16 +41,11 @@ public class DeliveryService {
         newItem.setName(item.getName());
         newItem.setQuantity(item.getQuantity());
         newItem.setPrice(item.getPrice());
-        if(newItem.getName().equals(SECRET_CODE)){
-            deliverySA.setActivated(true);
-        } else if (oldName.equals(SECRET_CODE))  deliverySA.setActivated(false);
         return repository.save(newItem);
     }
 
     public List<Delivery> getList() {
-        List<Delivery> list_ = this.repository.findAll();
-        deliverySA.setActivated(list_.stream().anyMatch(delivery -> delivery.getName().equals(SECRET_CODE)));
-        return list_;
+        return this.repository.findAll();
     }
 
 }

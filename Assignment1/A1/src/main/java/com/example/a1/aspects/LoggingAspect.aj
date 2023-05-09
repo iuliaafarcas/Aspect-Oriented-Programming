@@ -1,29 +1,40 @@
 package com.example.a1.aspects;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.logging.Logger;
 
+@Aspect
+@Order(1)
 @Component
-public aspect LoggingAspect {
-    pointcut logging(): execution(public * com.example.a1.service.DeliveryService.*(..)) && !within(LoggingAspect);
+public class LoggingAspect {
+
+    @Pointcut("execution(public * com.example.a1.service.DeliveryService.*(..)) && !within(LoggingAspect)")
+    private void logging() {
+    }
 
     private static final Logger logger = Logger.getLogger(LoggingAspect.class.getName());
 
-    before(): logging() {
-        MethodSignature methodSignature = (MethodSignature) thisJoinPoint.getSignature();
-        logger.info(buildLog("entered", methodSignature, thisJoinPoint));
+    @Before("logging()")
+    public void doLogBefore(JoinPoint joinPoint) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        logger.info(buildLog("entered", methodSignature, joinPoint));
     }
 
-    after() returning: logging() {
-        MethodSignature methodSignature = (MethodSignature) thisJoinPoint.getSignature();
-        logger.info(buildLog("exited successfully", methodSignature, thisJoinPoint));
+
+    @AfterReturning("logging()")
+    public void doLogAfterReturning(JoinPoint joinPoint) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        logger.info(buildLog("exited successfully", methodSignature, joinPoint));
     }
 
-    after() throwing(Throwable ex): logging() {
-        MethodSignature methodSignature = (MethodSignature) thisJoinPoint.getSignature();
+    @AfterThrowing(pointcut= "logging()", throwing = "ex")
+    public void doLogAfterThrowing(JoinPoint joinPoint, Throwable ex) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         logger.severe(methodSignature.getName() + "(): Error " + ex.getMessage());
     }
 
