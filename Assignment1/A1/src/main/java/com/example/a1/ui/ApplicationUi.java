@@ -19,7 +19,10 @@ public class ApplicationUi extends Application {
 
     @Override
     public void init(){
-        applicationContext= new SpringApplicationBuilder(A1Application.class).run();
+
+        SpringApplicationBuilder builder= new SpringApplicationBuilder(A1Application.class);
+        builder.headless(false);
+        applicationContext = builder.run();
     }
 
     @Override

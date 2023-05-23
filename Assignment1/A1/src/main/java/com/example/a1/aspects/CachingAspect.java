@@ -29,7 +29,7 @@ public class CachingAspect {
     private void getObjectByIdOperation(Long id) {
     }
 
-    
+
     @Pointcut("execution(public * com.example.a1.repository.DeliveryRepository.save(..)) && !within(CachingAspect)")
     private void saveOperation() {
     }

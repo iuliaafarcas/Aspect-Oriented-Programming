@@ -1,5 +1,6 @@
 package com.example.a1.service;
 
+import com.example.a1.aspects.RequiresAuthentication;
 import com.example.a1.model.Delivery;
 import com.example.a1.repository.DeliveryRepository;
 import jakarta.transaction.Transactional;
@@ -18,13 +19,14 @@ public class DeliveryService {
         this.repository = repository;
     }
 
-
+    @RequiresAuthentication
     public Delivery addDelivery(Delivery item) {
 
         Delivery newDelivery = this.repository.save(item);
         return newDelivery;
     }
 
+    @RequiresAuthentication
     public void deleteDelivery(Long id) {
         if (!repository.existsById(id)) {
             throw new RuntimeException("Delivery with id " + id + " does NOT exist!");
@@ -34,10 +36,11 @@ public class DeliveryService {
 
     }
 
+    @RequiresAuthentication
     @Transactional
     public Delivery updateDelivery(Delivery item) {
         Delivery newItem = this.repository.findById(item.getId()).orElseThrow(() -> new RuntimeException("Game with id " + item.getId() + " not found"));
-        String oldName=newItem.getName();
+
         newItem.setName(item.getName());
         newItem.setQuantity(item.getQuantity());
         newItem.setPrice(item.getPrice());
